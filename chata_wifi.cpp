@@ -14,7 +14,7 @@ WiFiSSLClient client;
 
 // Sensors
 float t1,t2,t3,t4,v1,v2;
-int a1,r1,r2,r3;
+int a1,a2, a3, r1, r2, r3;
 
 #ifdef USE_TMP102
 #include <Temperature_LM75_Derived.h>
@@ -271,6 +271,20 @@ void read_sensors() {
   DEBUG_PRINT(digitalRead(R3_RESET_PIN));
   DEBUG_PRINT("\r\n");
   delay(1000);
+
+  // Current sensor, 0-1024
+  DEBUG_PRINT("A2: ");
+  a2 = analogRead(CURRENT_1_PIN);
+  DEBUG_PRINT(a2);
+  DEBUG_PRINT("\r\n");
+  delay(1000);
+
+  // Current sensor, 0-1024
+  DEBUG_PRINT("A3: ");
+  a3 = analogRead(CURRENT_2_PIN);
+  DEBUG_PRINT(a3);
+  DEBUG_PRINT("\r\n");
+  delay(1000);
 }
 
 void update_logic() {
@@ -344,9 +358,11 @@ void update_json() {
   JsonObject feed10 = feeds.createNestedObject();
   feed10["key"] = "r3";
   feed10["value"] = r3;
+  feed7["key"] = "current1";
+  feed7["value"] = a2;
+  feed7["key"] = "current2";
+  feed7["value"] = a3;
 }
-
-
 
 /**
  * 
@@ -362,23 +378,24 @@ obecně: kontinuální měření v určitých intervalech (5-20 minut)
   - T4 venku
  */
 #define TEMPERATURE_MAX_C 38.0
-#define TEMPERATURE_MIN_C -1.0
-#define BATTERY_HEATING_THRESHOLD_V 12.0
+#define T4_TEMPERATURE_MIN_C 3.0
+#define T4_TEMPERATURE_MAX_C 4.0
+#define BATTERY_HEATING_THRESHOLD_V 12.5
 void temperature_logic() {
   if (t3 > TEMPERATURE_MAX_C) {
     // alarm!
     DEBUG_PRINTLN("Alarm: t3 > TEMPERATURE_MAX_C!");
   }
 
-  if (t1 < TEMPERATURE_MIN_C || t2 < TEMPERATURE_MIN_C) {
+  if (t4 < T4_TEMPERATURE_MIN_C) {
     // alarm!
-    DEBUG_PRINTLN("Alarm: t1 < TEMPERATURE_MIN_C || t2 < TEMPERATURE_MIN_C");
+    DEBUG_PRINTLN("Alarm: t4 < T_4TEMPERATURE_MIN_C");
     if (v2 > BATTERY_HEATING_THRESHOLD_V)
       DEBUG_PRINTLN("Alarm: v2 > BATTERY_HEATING_THRESHOLD_V");
       r3 = true;
   }
   
-  if (v2 <= BATTERY_HEATING_THRESHOLD_V) {
+  if (v2 <= BATTERY_HEATING_THRESHOLD_V || t4 > T4_TEMPERATURE_MAX_C) {
     // alarm!
     DEBUG_PRINTLN("Alarm: v2 <= BATTERY_HEATING_THRESHOLD_V");
     r3 = false;
@@ -410,8 +427,8 @@ Baterie B (baterie, která krmí systém počítače + ostrahy )
   alarm nízkého napětí              
 */
 #define BATTERY_B_LOW_VOLTAGE_V 11.0
-#define BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V 12.0
-#define BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V 11.5
+#define BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V 12.5
+#define BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V 12.15
 void battery_voltage_logic() {
   if (v2 < BATTERY_B_LOW_VOLTAGE_V){
     // alarm!

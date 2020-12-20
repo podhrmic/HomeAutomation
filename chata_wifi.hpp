@@ -18,7 +18,9 @@
 // Analog vstup: povolene napeti 0-3.3V, hodnoty: 0-1024 (je treba prepocitat na skutecne jednotky) 
 // A0 - unused
 // A1 - měřič proudu, měří nabíjecí/vybíjecí proud baterie 1
+#define CURRENT_1_PIN A1
 // A2 - měřič proudu, měří nabíjecí/vybíjecí proud baterie 2 
+#define CURRENT_2_PIN A2
 // A3 - soumrakové čidlo, měření soumraku
 #define LIGHT_1_PIN A3 
 // A4 - unused
