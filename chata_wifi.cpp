@@ -350,14 +350,14 @@ void update_json() {
   feed7["key"] = "light1";
   feed7["value"] = a1;
   JsonObject feed8 = feeds.createNestedObject();
-  feed8["key"] = "r1";
-  feed8["value"] = r1; 
+  feed8["key"] = "r1"; // Current sensor for now
+  feed8["value"] = a2; 
   JsonObject feed9 = feeds.createNestedObject();
   feed9["key"] = "r2";
-  feed9["value"] = r2;
+  feed9["value"] = r2; // Lednicove rele
   JsonObject feed10 = feeds.createNestedObject();
-  feed10["key"] = "r3";
-  feed10["value"] = r3;
+  feed10["key"] = "r3"; // Current sensor for now
+  feed10["value"] = a3;
 }
 
 /**
