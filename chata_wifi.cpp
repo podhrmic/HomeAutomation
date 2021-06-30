@@ -358,10 +358,6 @@ void update_json() {
   JsonObject feed10 = feeds.createNestedObject();
   feed10["key"] = "r3";
   feed10["value"] = r3;
-  feed7["key"] = "current1";
-  feed7["value"] = a2;
-  feed7["key"] = "current2";
-  feed7["value"] = a3;
 }
 
 /**
