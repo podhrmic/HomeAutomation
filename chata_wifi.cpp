@@ -210,6 +210,8 @@ void read_sensors() {
 
   DEBUG_PRINT("V2: ");
   v2 = v2_ina219.getBusVoltage_V();
+  // V2 has an offset of 0.5 V for some reason
+  v2 = v2 + 0.5;
   DEBUG_PRINT(v2);
   DEBUG_PRINT("[V]\r\n");
   delay(1000);
@@ -423,8 +425,8 @@ Baterie B (baterie, která krmí systém počítače + ostrahy )
   alarm nízkého napětí              
 */
 #define BATTERY_B_LOW_VOLTAGE_V 11.0
-#define BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V 12.5
-#define BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V 12.15
+#define BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V 12.2
+#define BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V 11.9
 void battery_voltage_logic() {
   if (v2 < BATTERY_B_LOW_VOLTAGE_V){
     // alarm!
