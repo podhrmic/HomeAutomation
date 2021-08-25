@@ -425,8 +425,11 @@ Baterie B (baterie, která krmí systém počítače + ostrahy )
   alarm nízkého napětí              
 */
 #define BATTERY_B_LOW_VOLTAGE_V 11.0
-#define BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V 12.5
-#define BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V 11.2
+// POZOR! Hystereze je tady ted k nicemu, nebot Arduino se resetuje kazde cca 2 minuty
+// FIX: co nejmensi hystereze, takze lednice je zapnuta po vetsinu casu, a az pouze kdyz
+// je baterie moc nizko bude vypnuta
+#define BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V 12.2
+#define BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V 11.9
 void battery_voltage_logic() {
   if (v2 < BATTERY_B_LOW_VOLTAGE_V){
     // alarm!
