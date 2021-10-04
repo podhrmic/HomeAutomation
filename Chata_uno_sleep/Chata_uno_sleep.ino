@@ -8,7 +8,7 @@
 // Seconds to wait before a new sensor reading is logged.
 #define WAKEUP_INTERVAL_SECONDS   120
 #define MAX_SLEEP_ITERATIONS   WAKEUP_INTERVAL_SECONDS / 8
-#define KEEP_AWAKE_FOR_SECONDS 120
+#define KEEP_AWAKE_FOR_SECONDS 120*60 // 2 hours
 
 volatile bool watchdogActivated = false;
 int sleepIterations = 0;

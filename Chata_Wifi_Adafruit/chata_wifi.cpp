@@ -430,24 +430,37 @@ Baterie B (baterie, která krmí systém počítače + ostrahy )
 // je baterie moc nizko bude vypnuta
 #define BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V 12.2
 #define BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V 11.9
+#define TEN_MINUTES_IN_MS 10*60*1000
 void battery_voltage_logic() {
   if (v2 < BATTERY_B_LOW_VOLTAGE_V){
     // alarm!
     DEBUG_PRINTLN("Alarm: v2 < BATTERY_B_LOW_VOLTAGE_V");
     r2 = false;
   }
-  
-  if (v2 > BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V) {
-    // alarm!
-    DEBUG_PRINTLN("Alarm: v2 > BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V");
-    DEBUG_PRINTLN("Zapinam lednici!");
-    r2 = true;
-  } 
-  if (v2 < BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V) {
-    // alarm!
-    DEBUG_PRINTLN("Vypinam lednici!");
-    DEBUG_PRINTLN("Alarm: v2 < BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V");
-    r2 = false;
+
+  // Arduino nam dava uptime v milisekundach
+  if (millis() < TEN_MINUTES_IN_MS) {
+    // Prvnich deset minut je lednice zapnuta, i kdyz jsme jinak
+    // pod thresholdem hystereze - dulezite pro nocni provoz
+    if (v2 > 11.5) {
+      r2 = true;
+    } else {
+      r2 = false;
+    }
+  } else {
+    // Po prvnich deseti minutach zacneme uplatnovat hysterezi
+    if (v2 > BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V) {
+      // alarm!
+      DEBUG_PRINTLN("Alarm: v2 > BATTERY_FRIDGE_CONTROL_ON_THRESHOLD_V");
+      DEBUG_PRINTLN("Zapinam lednici!");
+      r2 = true;
+    }
+    if (v2 < BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V) {
+      // alarm!
+      DEBUG_PRINTLN("Vypinam lednici!");
+      DEBUG_PRINTLN("Alarm: v2 < BATTERY_FRIDGE_CONTROL_OFF_THRESHOLD_V");
+      r2 = false;
+    }
   }
 }
 
